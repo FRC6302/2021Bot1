@@ -44,7 +44,10 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     //change this to change what path is run by the robot
     //Robot.trajectoryJSON = "BarrelRacingPW/PathWeaver/output/BarrelRacing.wpilib.json";
-    Robot.trajectoryJSON = "BouncePathPW/PathWeaver/output/BouncePath.wpilib.json";
+    //Robot.trajectoryJSON = "BouncePathPW/PathWeaver/output/BouncePath.wpilib.json";
+    //Robot.trajectoryJSON = "PathWeaver3/PathWeaver/output/BarrelRacing.wpilib.json";
+    //Robot.trajectoryJSON = "SlalomPW2/PathWeaver/output/Slalom1.wpilib.json";
+    Robot.trajectoryJSON = "BarrelPW2/PathWeaver/output/Barrel1.wpilib.json";
 
     Trajectory.State testState = new Trajectory.State(1., 1., 1., new Pose2d(0, 0, new Rotation2d(0)), 1.);
     Robot.testTrajectory = new Trajectory(List.of(testState));

@@ -354,6 +354,7 @@ public class RobotContainer {
 
     // Run path following command, then stop at the end.
     return ramseteCommand.andThen(() -> driveTrain.tankDriveVolts(0, 0));
+    //return ramseteCommand.alongWith(new SuckBalls(intake));
   
     //return chooser.getSelected();
   } 
