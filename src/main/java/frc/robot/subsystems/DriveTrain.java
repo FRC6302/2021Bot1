@@ -48,7 +48,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
   Google the error and see what pops up. It could also be a mechanical problem, especially if Pauley built it. 
   3. WPILIB has a lot of tutorials for various things on their website.
   
-  Putting your code on GitHub:
+  Putting your code on GitHub: 
   1. Watch a few videos on how GitHub works - learn about pull requests, commits, pushes, branches, etc.
   2. Watch the GitHub VS Code tutorial video here:
   FRC - Command Base System - Java - VS Code 2020 - Part 10 by Nevin Morrison
