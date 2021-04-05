@@ -70,7 +70,9 @@ public final class Constants {
     public static final int leftDriveEncChannelA = 7;
 	public static final int leftDriveEncChannelB = 8;
 	public static final int rightDriveEncChannelA = 1;
-	public static final int rightDriveEncChannelB = 2;	
+    public static final int rightDriveEncChannelB = 2;	
+    //public static boolean leftDriveEncReversed = false;
+    //public static boolean rightDriveEncReversed = true;
 	
     //limelight
     public static final double limelightTXDeadzone = 0.5;

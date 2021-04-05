@@ -156,11 +156,8 @@ public class DriveTrain extends SubsystemBase {
     odometry = new DifferentialDriveOdometry(NavX.getGyroRotation2d());
     
   }
-  //TO DO: find whereever i used an instant command and change it to a lambda. 
+  //TO DO: find whereever i used an instant command and change it to a lambda?
   //Also, graph pidController.getSetpoint() to test turn right command
-
-  //TODO: figure out whats up with VS Code and PathWeaver. Don't save any empty paths because it would override
-  //the right path
 
   @Override
   public void periodic() {
@@ -265,5 +262,10 @@ public class DriveTrain extends SubsystemBase {
     SmartDashboard.putNumber("PIDOutput", output);
     setLeftMotors(output / PIDDivisor);
     setRightMotors(-output / PIDDivisor); //right is neg so it turns right
+  }
+
+  public void reverseDriveEncoders() {
+    leftDriveEnc.setReverseDirection(!leftDriveEnc.getDirection());
+    rightDriveEnc.setReverseDirection(!rightDriveEnc.getDirection());
   }
 }

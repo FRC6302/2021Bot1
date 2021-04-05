@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.AutonBarrelRoll;
 import frc.robot.commands.AutonBouncePath;
+import frc.robot.commands.BackwardsTrajectoryTest;
 import frc.robot.commands.DriveGTA;
 import frc.robot.commands.Feed;
 import frc.robot.commands.GetInRange;
@@ -94,6 +95,8 @@ public class RobotContainer {
   
   AutonBarrelRoll autonBarrelRoll;
   AutonBouncePath autonBouncePath;
+  BackwardsTrajectoryTest backwardsTrajectoryTest;
+
   SendableChooser<Command> chooser = new SendableChooser<>();
   //Smart Dashboard cannot be set to "Editable" if you want to select an option for auton
 
@@ -163,6 +166,8 @@ public class RobotContainer {
     autonBarrelRoll.addRequirements(driveTrain);
     autonBouncePath = new AutonBouncePath(driveTrain);
     autonBouncePath.addRequirements(driveTrain, batteryVoltage); //doesnt actually need battery, I just dont want errors
+
+    backwardsTrajectoryTest = new BackwardsTrajectoryTest(driveTrain);
 
     chooser.addOption("Auton Barrel Roll", autonBarrelRoll);
     chooser.addOption("Auton Bounce Path", autonBouncePath);
@@ -249,6 +254,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    
     // Create a voltage constraint to ensure we don't accelerate too fast
     var autoVoltageConstraint =
       new DifferentialDriveVoltageConstraint(new SimpleMotorFeedforward(Constants.ksVolts,
@@ -316,7 +322,7 @@ public class RobotContainer {
           return new ChassisSpeeds(linearVelocityRefMeters, 0.0, angularVelocityRefRadiansPerSecond);
         }
     };*/
-    Trajectory exampleTrajectory = Robot.testTrajectory;
+    /*Trajectory exampleTrajectory1 = Robot.testTrajectory1;
 
     PIDController leftController = new PIDController(Constants.kPDriveVel, 0, 0);
     PIDController rightController = new PIDController(Constants.kPDriveVel, 0, 0);
@@ -324,7 +330,7 @@ public class RobotContainer {
     //PIDController rightController = new PIDController(0, 0, 0);
 
     RamseteCommand ramseteCommand = new RamseteCommand(
-      exampleTrajectory,
+      exampleTrajectory1,
       driveTrain::getPose,
       new RamseteController(Constants.kRamseteB, Constants.kRamseteZeta),
       //disabledRamsete,
@@ -350,12 +356,101 @@ public class RobotContainer {
     );
 
     // Reset odometry to the starting pose of the trajectory.
-    driveTrain.resetOdometry(exampleTrajectory.getInitialPose());
+    driveTrain.resetOdometry(exampleTrajectory1.getInitialPose());
 
     // Run path following command, then stop at the end.
     return ramseteCommand.andThen(() -> driveTrain.tankDriveVolts(0, 0));
     //return ramseteCommand.alongWith(new SuckBalls(intake));
   
-    //return chooser.getSelected();
+    //return chooser.getSelected(); 
+    //return backwardsTrajectoryTest;*/
+    return getForwardTestCommand();
+
   } 
+
+  public Command getForwardTestCommand() {
+    Trajectory exampleTrajectory1 = Robot.testTrajectory1;
+
+    PIDController leftController = new PIDController(Constants.kPDriveVel, 0, 0);
+    PIDController rightController = new PIDController(Constants.kPDriveVel, 0, 0);
+    //PIDController leftController = new PIDController(0, 0, 0);
+    //PIDController rightController = new PIDController(0, 0, 0);
+
+    RamseteCommand ramseteCommand = new RamseteCommand(
+      exampleTrajectory1,
+      driveTrain::getPose,
+      new RamseteController(Constants.kRamseteB, Constants.kRamseteZeta),
+      //disabledRamsete,
+      new SimpleMotorFeedforward(Constants.ksVolts,
+                                  Constants.kvVoltSecondsPerMeter,
+                                  Constants.kaVoltSecondsSquaredPerMeter),
+      Constants.kDriveKinematics,
+      driveTrain::getWheelSpeeds,
+      leftController,
+      rightController,
+      // RamseteCommand passes volts to the callback
+      //driveTrain::tankDriveVolts,
+      (leftVolts, rightVolts) -> {
+        driveTrain.tankDriveVolts(leftVolts, rightVolts);
+
+        /*SmartDashboard.putNumber("left measurement", driveTrain.getWheelSpeeds().leftMetersPerSecond);
+        SmartDashboard.putNumber("left reference", leftController.getSetpoint());
+
+        SmartDashboard.putNumber("right measurement", driveTrain.getWheelSpeeds().rightMetersPerSecond);
+        SmartDashboard.putNumber("right reference", rightController.getSetpoint());*/
+      },
+      driveTrain
+    );
+
+    // Reset odometry to the starting pose of the trajectory.
+    driveTrain.resetOdometry(exampleTrajectory1.getInitialPose());
+
+    // Run path following command, then stop at the end.
+    return ramseteCommand.andThen(() -> driveTrain.tankDriveVolts(0, 0));
+    //return ramseteCommand.alongWith(new SuckBalls(intake));
+  
+  }
+  
+  /*public Command getReverseTestCommand() {
+    Trajectory exampleTrajectory2 = Robot.testTrajectory2;
+
+    PIDController leftController = new PIDController(Constants.kPDriveVel, 0, 0);
+    PIDController rightController = new PIDController(Constants.kPDriveVel, 0, 0);
+    //PIDController leftController = new PIDController(0, 0, 0);
+    //PIDController rightController = new PIDController(0, 0, 0);
+
+    RamseteCommand ramseteCommand = new RamseteCommand(
+      exampleTrajectory2,
+      driveTrain::getPose,
+      new RamseteController(Constants.kRamseteB, Constants.kRamseteZeta),
+      //disabledRamsete,
+      new SimpleMotorFeedforward(Constants.ksVolts,
+                                  Constants.kvVoltSecondsPerMeter,
+                                  Constants.kaVoltSecondsSquaredPerMeter),
+      Constants.kDriveKinematics,
+      driveTrain::getWheelSpeeds,
+      leftController,
+      rightController,
+      // RamseteCommand passes volts to the callback
+      //driveTrain::tankDriveVolts,
+      (leftVolts, rightVolts) -> {
+        driveTrain.tankDriveVolts(leftVolts, rightVolts);
+
+        /*SmartDashboard.putNumber("left measurement", driveTrain.getWheelSpeeds().leftMetersPerSecond);
+        SmartDashboard.putNumber("left reference", leftController.getSetpoint());
+
+        SmartDashboard.putNumber("right measurement", driveTrain.getWheelSpeeds().rightMetersPerSecond);
+        SmartDashboard.putNumber("right reference", rightController.getSetpoint());*/
+      /*},
+      driveTrain
+    );
+
+    // Reset odometry to the starting pose of the trajectory.
+    driveTrain.resetOdometry(exampleTrajectory2.getInitialPose());
+
+    // Run path following command, then stop at the end.
+    return ramseteCommand.andThen(() -> driveTrain.tankDriveVolts(0, 0));
+    //return ramseteCommand.alongWith(new SuckBalls(intake));
+  
+  }*/
 }

@@ -32,9 +32,13 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   public static RobotContainer robotContainer;
-  public static String trajectoryJSON;
-  public static Path testPath;
-  public static Trajectory testTrajectory; 
+
+  public static String trajectoryJSON1;
+  public static Path testPath1;
+  public static Trajectory testTrajectory1; 
+  public static String trajectoryJSON2;
+  public static Path testPath2;
+  public static Trajectory testTrajectory2; 
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -46,24 +50,42 @@ public class Robot extends TimedRobot {
     //Robot.trajectoryJSON = "BarrelRacingPW/PathWeaver/output/BarrelRacing.wpilib.json";
     //Robot.trajectoryJSON = "BouncePathPW/PathWeaver/output/BouncePath.wpilib.json";
     //Robot.trajectoryJSON = "PathWeaver3/PathWeaver/output/BarrelRacing.wpilib.json";
-    //Robot.trajectoryJSON = "SlalomPW2/PathWeaver/output/Slalom1.wpilib.json";
-    //Robot.trajectoryJSON = "BarrelPW2/PathWeaver/output/Barrel1.wpilib.json";
-    Robot.trajectoryJSON = "BouncePW2/PathWeaver/output/Bounce1.wpilib.json";
+    Robot.trajectoryJSON1 = "SlalomPW2/PathWeaver/output/Slalom1.wpilib.json";
+    //Robot.trajectoryJSON1 = "BarrelPW2/PathWeaver/output/Barrel1.wpilib.json";
+    //Robot.trajectoryJSON1 = "BouncePW2/PathWeaver/output/Bounce1.wpilib.json";
+    //Robot.trajectoryJSON1 = "BouncePW2/PathWeaver/output/Forwards.wpilib.json";
 
-    Trajectory.State testState = new Trajectory.State(1., 1., 1., new Pose2d(0, 0, new Rotation2d(0)), 1.);
-    Robot.testTrajectory = new Trajectory(List.of(testState));
+    Trajectory.State testState1 = new Trajectory.State(1., 1., 1., new Pose2d(0, 0, new Rotation2d(0)), 1.);
+    Robot.testTrajectory1 = new Trajectory(List.of(testState1));
 
     try {
-    Robot.testPath = Filesystem.getDeployDirectory().toPath().resolve(Robot.trajectoryJSON);
+    Robot.testPath1 = Filesystem.getDeployDirectory().toPath().resolve(Robot.trajectoryJSON1);
     } catch (RuntimeException ex) {
-      DriverStation.reportError("Unable to open trajectory : " + Robot.trajectoryJSON, ex.getStackTrace());
+      DriverStation.reportError("Unable to open trajectory : " + Robot.trajectoryJSON1 + " because: ", ex.getStackTrace());
     }
 
     try {
-      testTrajectory = TrajectoryUtil.fromPathweaverJson(Robot.testPath);
+      testTrajectory1 = TrajectoryUtil.fromPathweaverJson(Robot.testPath1);
     } catch (IOException ex) {
       DriverStation.reportError("Unable to change path to trajectory because:", ex.getStackTrace());
     }
+    
+
+    /*Robot.trajectoryJSON2 = "BouncePW2/PathWeaver/output/Reverse.wpilib.json";
+    Trajectory.State testState2 = new Trajectory.State(1., 1., 1., new Pose2d(0, 0, new Rotation2d(0)), 1.);
+    Robot.testTrajectory2 = new Trajectory(List.of(testState2));
+
+    try {
+    Robot.testPath2 = Filesystem.getDeployDirectory().toPath().resolve(Robot.trajectoryJSON2);
+    } catch (RuntimeException ex) {
+      DriverStation.reportError("Unable to open trajectory : " + Robot.trajectoryJSON2 + " because: ", ex.getStackTrace());
+    }
+
+    try {
+      testTrajectory2 = TrajectoryUtil.fromPathweaverJson(Robot.testPath2);
+    } catch (IOException ex) {
+      DriverStation.reportError("Unable to change path to trajectory because:", ex.getStackTrace());
+    }*/
     
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
