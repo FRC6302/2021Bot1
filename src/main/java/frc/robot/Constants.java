@@ -73,6 +73,9 @@ public final class Constants {
     public static final int rightDriveEncChannelB = 2;	
     //public static boolean leftDriveEncReversed = false;
     //public static boolean rightDriveEncReversed = true;
+
+    //drive
+    public static final double maxDriveSpeed = 0.8;
 	
     //limelight
     public static final double limelightTXDeadzone = 0.5;
@@ -94,7 +97,7 @@ public final class Constants {
     public static final double rightMotorsMoveSpeed = 0.3;
 
     //shooter and feeder commands
-    public static final double shootSpeed = 0.5;
+    public static final double shootSpeed = 0.6;
     public static final double timedShootTime = 2;
     public static final double timedShootSpeed = 0.5; //was 1.0 last year
 
@@ -124,7 +127,8 @@ public final class Constants {
 	public static final int turnToYawZeroButton = Constants.rightBumper;
 	public static final int turnRightButton = Constants.leftBumper;
 	public static final int intakeButton = Constants.rightBumper;
-	public static final int shootButton = Constants.bButton;
+	public static final int shootButton = Constants.leftBumper;
+	
 	
 	
 }

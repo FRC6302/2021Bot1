@@ -21,10 +21,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.AutonBarrelRoll;
 import frc.robot.commands.AutonBouncePath;
-import frc.robot.commands.BackwardsTrajectoryTest;
 import frc.robot.commands.DriveGTA;
 import frc.robot.commands.Feed;
 import frc.robot.commands.GetInRange;
@@ -95,7 +95,6 @@ public class RobotContainer {
   
   AutonBarrelRoll autonBarrelRoll;
   AutonBouncePath autonBouncePath;
-  BackwardsTrajectoryTest backwardsTrajectoryTest;
 
   SendableChooser<Command> chooser = new SendableChooser<>();
   //Smart Dashboard cannot be set to "Editable" if you want to select an option for auton
@@ -167,8 +166,6 @@ public class RobotContainer {
     autonBouncePath = new AutonBouncePath(driveTrain);
     autonBouncePath.addRequirements(driveTrain, batteryVoltage); //doesnt actually need battery, I just dont want errors
 
-    backwardsTrajectoryTest = new BackwardsTrajectoryTest(driveTrain);
-
     chooser.addOption("Auton Barrel Roll", autonBarrelRoll);
     chooser.addOption("Auton Bounce Path", autonBouncePath);
     chooser.setDefaultOption("Move (default)", move);
@@ -230,8 +227,8 @@ public class RobotContainer {
     //final JoystickButton turnToYawZeroButton = new JoystickButton(driverController, Constants.turnToYawZeroButton);
     //turnToYawZeroButton.whileHeld(new TurnToYawZero(driveTrain));
 
-    final JoystickButton turnRightButton = new JoystickButton(driverController, Constants.turnRightButton);
-    turnRightButton.whileHeld(new ZeroYawAndTurnRight(driveTrain));
+    //final JoystickButton turnRightButton = new JoystickButton(driverController, Constants.turnRightButton);
+    //turnRightButton.whileHeld(new ZeroYawAndTurnRight(driveTrain));
 
     final JoystickButton moveStraightButton = new JoystickButton(driverController, Constants.moveStraightButton);
     moveStraightButton.whenPressed(new MoveStraight(driveTrain, 0.3, 3));
@@ -364,7 +361,11 @@ public class RobotContainer {
   
     //return chooser.getSelected(); 
     //return backwardsTrajectoryTest;*/
-    return getForwardTestCommand();
+    return getForwardTestCommand()
+    //.andThen(new InstantCommand(driveTrain::resetEncoders, driveTrain))
+    //.andThen(getReverseTestCommand())
+    //.andThen(new InstantCommand(driveTrain::resetEncoders, driveTrain))
+    ;
 
   } 
 
@@ -408,10 +409,11 @@ public class RobotContainer {
     // Run path following command, then stop at the end.
     return ramseteCommand.andThen(() -> driveTrain.tankDriveVolts(0, 0));
     //return ramseteCommand.alongWith(new SuckBalls(intake));
+    //return new InstantCommand(driveTrain::resetEncoders, driveTrain).andThen()
   
   }
   
-  /*public Command getReverseTestCommand() {
+  public Command getReverseTestCommand() {
     Trajectory exampleTrajectory2 = Robot.testTrajectory2;
 
     PIDController leftController = new PIDController(Constants.kPDriveVel, 0, 0);
@@ -441,7 +443,7 @@ public class RobotContainer {
 
         SmartDashboard.putNumber("right measurement", driveTrain.getWheelSpeeds().rightMetersPerSecond);
         SmartDashboard.putNumber("right reference", rightController.getSetpoint());*/
-      /*},
+      },
       driveTrain
     );
 
@@ -452,5 +454,5 @@ public class RobotContainer {
     return ramseteCommand.andThen(() -> driveTrain.tankDriveVolts(0, 0));
     //return ramseteCommand.alongWith(new SuckBalls(intake));
   
-  }*/
+  }
 }

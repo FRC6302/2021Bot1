@@ -12,6 +12,7 @@ import com.ctre.phoenix.motorcontrol.FollowerType;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 
 //TO DO: COMBINE ALL THE SHOOTER AND FEEDER COMMANDS INTO ONE OR TWO USING LAMBDAS OR SOMETHING
@@ -53,14 +54,14 @@ public class Shooter extends SubsystemBase {
    * Creates a new Shooter.
    */
   public Shooter() {
-    /*motorLeftLShooter = new TalonSRX(Constants.motorLeftLShooterValue);
+    motorLeftLShooter = new TalonSRX(Constants.motorLeftLShooterValue);
     motorLeftRShooter = new TalonSRX(Constants.motorLeftRShooterValue);
     motorRightLShooter = new TalonSRX(Constants.motorRightLShooterValue);
     motorRightRShooter = new TalonSRX(Constants.motorRightRShooterValue);
 
-    motorFeeder = new TalonSRX(Constants.motorFeederValue);
+    //motorFeeder = new TalonSRX(Constants.motorFeederValue);
 
-    leftLEncoder = new Encoder(90, 91); //I put random numbers on all these
+    /*leftLEncoder = new Encoder(90, 91); //I put random numbers on all these
     leftREncoder = new Encoder(92, 93); 
     rightLEncoder = new Encoder(94, 95); 
     rightREncoder = new Encoder(96, 97);*/

@@ -50,9 +50,9 @@ public class Robot extends TimedRobot {
     //Robot.trajectoryJSON = "BarrelRacingPW/PathWeaver/output/BarrelRacing.wpilib.json";
     //Robot.trajectoryJSON = "BouncePathPW/PathWeaver/output/BouncePath.wpilib.json";
     //Robot.trajectoryJSON = "PathWeaver3/PathWeaver/output/BarrelRacing.wpilib.json";
-    Robot.trajectoryJSON1 = "SlalomPW2/PathWeaver/output/Slalom1.wpilib.json";
+    //Robot.trajectoryJSON1 = "SlalomPW2/PathWeaver/output/Slalom1.wpilib.json";
     //Robot.trajectoryJSON1 = "BarrelPW2/PathWeaver/output/Barrel1.wpilib.json";
-    //Robot.trajectoryJSON1 = "BouncePW2/PathWeaver/output/Bounce1.wpilib.json";
+    Robot.trajectoryJSON1 = "BouncePW2/PathWeaver/output/Bounce1.wpilib.json";
     //Robot.trajectoryJSON1 = "BouncePW2/PathWeaver/output/Forwards.wpilib.json";
 
     Trajectory.State testState1 = new Trajectory.State(1., 1., 1., new Pose2d(0, 0, new Rotation2d(0)), 1.);
@@ -71,7 +71,7 @@ public class Robot extends TimedRobot {
     }
     
 
-    /*Robot.trajectoryJSON2 = "BouncePW2/PathWeaver/output/Reverse.wpilib.json";
+    Robot.trajectoryJSON2 = "BouncePW2/PathWeaver/output/Reverse.wpilib.json";
     Trajectory.State testState2 = new Trajectory.State(1., 1., 1., new Pose2d(0, 0, new Rotation2d(0)), 1.);
     Robot.testTrajectory2 = new Trajectory(List.of(testState2));
 
@@ -85,7 +85,7 @@ public class Robot extends TimedRobot {
       testTrajectory2 = TrajectoryUtil.fromPathweaverJson(Robot.testPath2);
     } catch (IOException ex) {
       DriverStation.reportError("Unable to change path to trajectory because:", ex.getStackTrace());
-    }*/
+    }
     
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.

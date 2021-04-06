@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants2;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -60,7 +61,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 //MAKING THIS CLASS WITH THE WPILIB TRAJECTORY TUTORIAL
 public class DriveTrain extends SubsystemBase {
 
-  WPI_TalonSRX motorL1 = new WPI_TalonSRX(Constants.motorL1Value);
+  WPI_TalonSRX motorL1 = new WPI_TalonSRX(Constants2.MOTOR_L1.value);
   WPI_TalonSRX motorL2 = new WPI_TalonSRX(Constants.motorL2Value);
   WPI_TalonSRX motorR1 = new WPI_TalonSRX(Constants.motorR1Value);
   WPI_TalonSRX motorR2 = new WPI_TalonSRX(Constants.motorR2Value);
@@ -162,19 +163,20 @@ public class DriveTrain extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    //TODO: make this run faster. It's at 0.02s
     odometry.update(NavX.getGyroRotation2d(), leftDriveEnc.getDistance(), rightDriveEnc.getDistance());
-    var translation = odometry.getPoseMeters().getTranslation();
-    SmartDashboard.putNumber("translation x", translation.getX());
-    SmartDashboard.putNumber("translation y", translation.getY());
-    SmartDashboard.putNumber("rotation2d", odometry.getPoseMeters().getRotation().getDegrees());
+    //var translation = odometry.getPoseMeters().getTranslation();
+    //SmartDashboard.putNumber("translation x", translation.getX());
+    //SmartDashboard.putNumber("translation y", translation.getY());
+    //SmartDashboard.putNumber("rotation2d", odometry.getPoseMeters().getRotation().getDegrees());
 
     SmartDashboard.putNumber("leftDriveEncDistance", leftDriveEnc.getDistance());
     SmartDashboard.putNumber("leftDriveEncRate", leftDriveEnc.getRate());
-    SmartDashboard.putNumber("leftDriveEncCount", leftDriveEnc.get());
+    //SmartDashboard.putNumber("leftDriveEncCount", leftDriveEnc.get());
     SmartDashboard.putNumber("rightDriveEncDistance", rightDriveEnc.getDistance());
     SmartDashboard.putNumber("rightDriveEncRate", rightDriveEnc.getRate());
-    SmartDashboard.putNumber("rightDriveEncCount", rightDriveEnc.get());
-    SmartDashboard.putNumber("motorL1 output percent", motorL1.getMotorOutputPercent());
+    //SmartDashboard.putNumber("rightDriveEncCount", rightDriveEnc.get());
+    //SmartDashboard.putNumber("motorL1 output percent", motorL1.getMotorOutputPercent());
     //SmartDashboard.putBoolean("leftEncStopped", leftDriveEnc.getStopped());
     //SmartDashboard.putBoolean("rightEncStopped", rightDriveEnc.getStopped());
 
