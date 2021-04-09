@@ -109,12 +109,12 @@ public class DriveTrain extends SubsystemBase {
   TrajectoryPoint class?
   */
 
+  private int driveReverser = 1;
+
   /**
    * Creates a new DriveTrain.
    */
   public DriveTrain() {
-    //leftDriveEnc2.reset();
-    //rightDriveEnc2.reset();
 
     leftDriveEnc.setDistancePerPulse(driveEncDPP);
     rightDriveEnc.setDistancePerPulse(driveEncDPP);
@@ -194,20 +194,20 @@ public class DriveTrain extends SubsystemBase {
   }*/
 
   public void setLeftMotors(double speed){
-    motorL1.set(ControlMode.PercentOutput, speed);
-    motorL2.set(ControlMode.PercentOutput, speed);
+    motorL1.set(ControlMode.PercentOutput, speed * driveReverser);
+    motorL2.set(ControlMode.PercentOutput, speed * driveReverser);
   }
 
   //right motors have inverted speed bc of how the motors are oriented on robot
   public void setRightMotors(double speed){
-    motorR1.set(ControlMode.PercentOutput, -speed);
-    motorR2.set(ControlMode.PercentOutput, -speed);
+    motorR1.set(ControlMode.PercentOutput, -speed * driveReverser);
+    motorR2.set(ControlMode.PercentOutput, -speed * driveReverser);
   }
 
 
   public void tankDriveVolts(double leftVolts, double rightVolts) {
-    leftMotors.setVoltage(leftVolts);
-    rightMotors.setVoltage(-rightVolts);
+    leftMotors.setVoltage(leftVolts * driveReverser);
+    rightMotors.setVoltage(-rightVolts * driveReverser);
 
     //idrk what these do but the project had it so
     motorL1.feed();
@@ -266,8 +266,25 @@ public class DriveTrain extends SubsystemBase {
     setRightMotors(-output / PIDDivisor); //right is neg so it turns right
   }
 
-  public void reverseDriveEncoders() {
-    leftDriveEnc.setReverseDirection(!leftDriveEnc.getDirection());
-    rightDriveEnc.setReverseDirection(!rightDriveEnc.getDirection());
+  public void reverseDrive() {
+    //motorL1.setInverted(true);
+    //motorL2.setInverted(true);
+
+    //driveReversed = (driveReversed == 1) ? 1 : -1;
+    driveReverser = -1;
+
+    leftDriveEnc.setReverseDirection(true);
+    rightDriveEnc.setReverseDirection(false);
+
+    //NavX.reverseGyro();
+  }
+
+  public void unReverseDrive() {
+    driveReverser = 1;
+
+    leftDriveEnc.setReverseDirection(false);
+    rightDriveEnc.setReverseDirection(true);
+
+    //NavX.unReverseGyro();
   }
 }

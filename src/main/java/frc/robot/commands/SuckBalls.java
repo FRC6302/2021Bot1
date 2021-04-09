@@ -7,18 +7,22 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Intake;
 
 public class SuckBalls extends CommandBase {
 Intake intake;
+Timer timer;
 
   /**
    * Creates a new TakeInBalls.
    */
   public SuckBalls(Intake intake) {
     // Use addRequirements() here to declare subsystem dependencies.
+    timer = new Timer();
+
     this.intake = intake;
     addRequirements(intake);
   }
@@ -26,6 +30,8 @@ Intake intake;
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    timer.reset();
+    timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -43,6 +49,7 @@ Intake intake;
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    //return timer.get() < 5;
     return false;
   }
 }

@@ -40,6 +40,7 @@ public class Robot extends TimedRobot {
   public static Path testPath2;
   public static Trajectory testTrajectory2; 
 
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -50,10 +51,13 @@ public class Robot extends TimedRobot {
     //Robot.trajectoryJSON = "BarrelRacingPW/PathWeaver/output/BarrelRacing.wpilib.json";
     //Robot.trajectoryJSON = "BouncePathPW/PathWeaver/output/BouncePath.wpilib.json";
     //Robot.trajectoryJSON = "PathWeaver3/PathWeaver/output/BarrelRacing.wpilib.json";
+
     //Robot.trajectoryJSON1 = "SlalomPW2/PathWeaver/output/Slalom1.wpilib.json";
     //Robot.trajectoryJSON1 = "BarrelPW2/PathWeaver/output/Barrel1.wpilib.json";
-    Robot.trajectoryJSON1 = "BouncePW2/PathWeaver/output/Bounce1.wpilib.json";
+    //Robot.trajectoryJSON1 = "BouncePW2/PathWeaver/output/Bounce1.wpilib.json";
     //Robot.trajectoryJSON1 = "BouncePW2/PathWeaver/output/Forwards.wpilib.json";
+    Robot.trajectoryJSON1 = "GalacticAPW2/PathWeaver/output/GalacticA1.wpilib.json";
+    //Robot.trajectoryJSON1 = "GalacticBPW2/PathWeaver/output/GalacticB1.wpilib.json";
 
     Trajectory.State testState1 = new Trajectory.State(1., 1., 1., new Pose2d(0, 0, new Rotation2d(0)), 1.);
     Robot.testTrajectory1 = new Trajectory(List.of(testState1));
@@ -86,7 +90,8 @@ public class Robot extends TimedRobot {
     } catch (IOException ex) {
       DriverStation.reportError("Unable to change path to trajectory because:", ex.getStackTrace());
     }
-    
+
+
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     robotContainer = new RobotContainer();
@@ -124,6 +129,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    robotContainer.reverseDrive1();
+    
     NavX.zeroGyroYaw();
 
     m_autonomousCommand = robotContainer.getAutonomousCommand();

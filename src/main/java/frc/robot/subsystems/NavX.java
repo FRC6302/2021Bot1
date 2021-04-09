@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class NavX extends SubsystemBase{
   private final static AHRS gyro = new AHRS(SPI.Port.kMXP);
+  private static double gyroReverser = 1;
   
   /**
    * Creates a new NavX.
@@ -32,7 +33,7 @@ public class NavX extends SubsystemBase{
 
   public static double getGyroYaw() { //yaw is rotation left or right
     //negative because trajectory requires counterclockwise rotation to be positive
-    return -gyro.getYaw(); 
+    return -gyro.getYaw() * gyroReverser; 
   }
 
   //navx didnt have a built in getRotation2d method (in this WPILIB version) so i had to get it like this
@@ -47,6 +48,14 @@ public class NavX extends SubsystemBase{
 
   public static boolean gyroIsCalibrating() {
     return gyro.isCalibrating();
+  }
+
+  public static void reverseGyro() {
+    gyroReverser = -1;
+  }
+
+  public static void unReverseGyro() {
+    gyroReverser = 1;
   }
 
 }

@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 
@@ -305,13 +306,6 @@ public class RobotContainer {
       config
     );*/
 
-    
-    //String trajectoryJSON = "paths/Unnamed.wpilib.json";
-    //String trajectoryJSON = "C:/Users/admin/Documents/2021Bot2/PathWeaver/Paths/Test.wpilib.json";
-    //String trajectoryJSON = "C:/Users/admin/Documents/2021Bot2/PathWeaver/output/Test.wpilib.json";
-    //Path testPath = Filesystem.getDeployDirectory().toPath().resolve(Robot.trajectoryJSON);
-    //Trajectory testTrajectory = exampleTrajectory; //new Trajectory(Trajectory.State(1., 1., 1., new Pose2d(0, 0, new Rotation2d(0)), 1.));
-
     /*RamseteController disabledRamsete = new RamseteController() {
       @Override
       public ChassisSpeeds calculate(Pose2d currentPose, Pose2d poseRef, double linearVelocityRefMeters,
@@ -361,16 +355,20 @@ public class RobotContainer {
   
     //return chooser.getSelected(); 
     //return backwardsTrajectoryTest;*/
-    return getForwardTestCommand()
-    //.andThen(new InstantCommand(driveTrain::resetEncoders, driveTrain))
+    return 
+    //new InstantCommand(driveTrain::reverseDrive, driveTrain)
+    getForwardTestCommand()
+    //.alongWith(new SuckBalls(intake))
+    //.andThen(new InstantCommand(driveTrain::unReverseDrive, driveTrain))
     //.andThen(getReverseTestCommand())
-    //.andThen(new InstantCommand(driveTrain::resetEncoders, driveTrain))
+    
     ;
 
   } 
 
   public Command getForwardTestCommand() {
     Trajectory exampleTrajectory1 = Robot.testTrajectory1;
+    //exampleTrajectory1 = TrajectoryGenerator.generateTrajectory(d, config)
 
     PIDController leftController = new PIDController(Constants.kPDriveVel, 0, 0);
     PIDController rightController = new PIDController(Constants.kPDriveVel, 0, 0);
@@ -392,7 +390,7 @@ public class RobotContainer {
       // RamseteCommand passes volts to the callback
       //driveTrain::tankDriveVolts,
       (leftVolts, rightVolts) -> {
-        driveTrain.tankDriveVolts(leftVolts, rightVolts);
+        driveTrain.tankDriveVolts(rightVolts, leftVolts); //TODO: change
 
         /*SmartDashboard.putNumber("left measurement", driveTrain.getWheelSpeeds().leftMetersPerSecond);
         SmartDashboard.putNumber("left reference", leftController.getSetpoint());
@@ -407,8 +405,8 @@ public class RobotContainer {
     driveTrain.resetOdometry(exampleTrajectory1.getInitialPose());
 
     // Run path following command, then stop at the end.
-    return ramseteCommand.andThen(() -> driveTrain.tankDriveVolts(0, 0));
-    //return ramseteCommand.alongWith(new SuckBalls(intake));
+    //return ramseteCommand.andThen(() -> driveTrain.tankDriveVolts(0, 0));
+    return ramseteCommand.alongWith(new SuckBalls(intake));
     //return new InstantCommand(driveTrain::resetEncoders, driveTrain).andThen()
   
   }
@@ -454,5 +452,9 @@ public class RobotContainer {
     return ramseteCommand.andThen(() -> driveTrain.tankDriveVolts(0, 0));
     //return ramseteCommand.alongWith(new SuckBalls(intake));
   
+  }
+
+  public void reverseDrive1() {
+    driveTrain.reverseDrive();
   }
 }

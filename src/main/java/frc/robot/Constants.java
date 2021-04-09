@@ -75,7 +75,7 @@ public final class Constants {
     //public static boolean rightDriveEncReversed = true;
 
     //drive
-    public static final double maxDriveSpeed = 0.8;
+    public static final double maxDriveSpeed = 0.9;
 	
     //limelight
     public static final double limelightTXDeadzone = 0.5;
@@ -89,7 +89,7 @@ public final class Constants {
 
 
     //intake
-    public static final double intakeSpeed = 1.0;
+    public static final double intakeSpeed = -0.99;//.55;
     
     //Move command
     public static final int MoveTime = 1; 
