@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Limelight extends SubsystemBase {
   static double x = 0, y = 0, targetFound = 0;
 
+  //TODO: make a method that returns distance from target and then use that distance
+  //to move to the right distance using MoveDistancePID
   /**
    * Creates a new Limelight.
    */

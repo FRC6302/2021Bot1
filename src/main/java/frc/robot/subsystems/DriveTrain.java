@@ -141,6 +141,9 @@ public class DriveTrain extends SubsystemBase {
     motorL2.configNeutralDeadband(0.001);
     motorR1.configNeutralDeadband(0.001);
     motorR2.configNeutralDeadband(0.001);
+    
+    //TODO: play with this
+    //motorL1.configPeakOutputForward(0.9);
 
     leftMotors = new SpeedControllerGroup(motorL1, motorL2);
     rightMotors = new SpeedControllerGroup(motorR1, motorR2);
@@ -177,7 +180,9 @@ public class DriveTrain extends SubsystemBase {
     SmartDashboard.putNumber("leftDriveEncRate", leftDriveEnc.getRate());
     SmartDashboard.putNumber("rightDriveEncDistance", rightDriveEnc.getDistance());
     SmartDashboard.putNumber("rightDriveEncRate", rightDriveEnc.getRate());
-    //SmartDashboard.putNumber("motorL1 output percent", motorL1.getMotorOutputPercent());
+    SmartDashboard.putNumber("averageDriveEncDistance", getAverageEncDistance());
+
+    SmartDashboard.putNumber("motorL1 output percent", motorL1.getMotorOutputPercent());
 
     //this is supposed to be so i dont get errors saying the motor output doesnt update enough,
     //but i still get them
@@ -236,6 +241,10 @@ public class DriveTrain extends SubsystemBase {
 
   public double getRightEncDistance() {
     return rightDriveEnc.getDistance();
+  }
+
+  public double getAverageEncDistance() {
+    return (leftDriveEnc.getDistance() + rightDriveEnc.getDistance()) / 2;
   }
 
   public void stopDrive() {

@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.AutonBarrelRoll;
 import frc.robot.commands.AutonBouncePath;
@@ -26,6 +27,7 @@ import frc.robot.commands.DriveGTA;
 import frc.robot.commands.Feed;
 import frc.robot.commands.GetInRange;
 import frc.robot.commands.Move;
+import frc.robot.commands.MoveDistancePID;
 import frc.robot.commands.MoveStraight;
 import frc.robot.commands.ParallelShootAndFeed;
 import frc.robot.commands.SeekLeft;
@@ -80,6 +82,7 @@ public class RobotContainer {
   private final GetInRange getInRange;
 
   private final Move move;
+  private final MoveDistancePID moveDistancePID;
 
   private final NavX navX;
   private final TurnToYawZero turnToYawZero;
@@ -142,6 +145,8 @@ public class RobotContainer {
 
     move = new Move(driveTrain);
     move.addRequirements(driveTrain);
+    moveDistancePID = new MoveDistancePID(driveTrain, 3);
+    moveDistancePID.addRequirements(driveTrain);
 
     navX = new NavX(); //NavX class must be instantiated or the code will never run and it wont give values
     turnToYawZero = new TurnToYawZero(driveTrain);
@@ -211,8 +216,8 @@ public class RobotContainer {
     //limelightTargetButton.whileHeld(new SeekLeft(driveTrain));
     limelightTargetButton.whileHeld(new SeekLeftPID(driveTrain));
 
-    //final JoystickButton moveButton = new JoystickButton(driverController, Constants.moveButton);
-    //moveButton.whenPressed(new Move(driveTrain, 0.3, -0.3, 1));
+    final JoystickButton moveButton = new JoystickButton(driverController, Constants.moveButton);
+    moveButton.whenPressed(new InstantCommand(driveTrain::resetEncoders, driveTrain).andThen(moveDistancePID));
 
     //final JoystickButton limelightGetInRangeButton = new 
       //JoystickButton(driverController, Constants.limelightGetInRangeButton);
@@ -227,8 +232,8 @@ public class RobotContainer {
     //final JoystickButton turnRightButton = new JoystickButton(driverController, Constants.turnRightButton);
     //turnRightButton.whileHeld(new ZeroYawAndTurnRight(driveTrain));
 
-    final JoystickButton moveStraightButton = new JoystickButton(driverController, Constants.moveStraightButton);
-    moveStraightButton.whenPressed(new MoveStraight(driveTrain, 0.3, 3));
+    //final JoystickButton moveStraightButton = new JoystickButton(driverController, Constants.moveStraightButton);
+    //moveStraightButton.whenPressed(new MoveStraight(driveTrain, 0.3, 3));
 
     //final JoystickButton shootAndFeedButton = new JoystickButton(driverController, Constants.shootAndFeedButton);
     //shootAndFeedButton.whenPressed(new ParallelShootAndFeed(shooter, feeder));
