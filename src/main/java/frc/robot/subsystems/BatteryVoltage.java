@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+//subsystem that keeps track of the voltage of the battery on our robot.
+//It can be helpful to graph the current voltage on smart dashboard
 public class BatteryVoltage extends SubsystemBase {
   static double initBatteryVoltage = RobotController.getBatteryVoltage();
   static double curBatteryVoltage;

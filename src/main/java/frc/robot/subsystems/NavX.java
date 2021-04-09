@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+//subsystem for the gyro on our robot
 public class NavX extends SubsystemBase{
   private final static AHRS gyro = new AHRS(SPI.Port.kMXP);
   private static double gyroReverser = 1;

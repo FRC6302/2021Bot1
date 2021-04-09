@@ -1,5 +1,6 @@
 package frc.robot;
 
+//trying out enums
 public enum Constants2 {
     MOTOR_L1(0);
 

@@ -13,16 +13,12 @@ import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.AutonBarrelRoll;
 import frc.robot.commands.AutonBouncePath;
@@ -252,122 +248,84 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    
-    // Create a voltage constraint to ensure we don't accelerate too fast
-    var autoVoltageConstraint =
-      new DifferentialDriveVoltageConstraint(new SimpleMotorFeedforward(Constants.ksVolts,
-      Constants.kvVoltSecondsPerMeter, Constants.kaVoltSecondsSquaredPerMeter),
-      Constants.kDriveKinematics, 10); 
-      //max voltage is 10, so voltage is the same regardless of current battery voltage because the bat voltage is always >10
+    //return chooser.getSelected(); 
 
-    // Create config for trajectory
-    TrajectoryConfig config =
-    new TrajectoryConfig(Constants.kMaxSpeedMetersPerSecond, Constants.kMaxAccelerationMetersPerSecondSquared)
+    return 
+    //new InstantCommand(driveTrain::reverseDrive, driveTrain)
+    getRamseteCommand1()
+    //.alongWith(new SuckBalls(intake))
+    //.andThen(new InstantCommand(driveTrain::unReverseDrive, driveTrain))
+    //.andThen(getReverseTestCommand())
+    ;
+
+  } 
+
+  public Command getRamseteCommand1() {
+    /*
+      // Create a voltage constraint to ensure we don't accelerate too fast
+      var autoVoltageConstraint =
+        new DifferentialDriveVoltageConstraint(new SimpleMotorFeedforward(Constants.ksVolts,
+        Constants.kvVoltSecondsPerMeter, Constants.kaVoltSecondsSquaredPerMeter),
+        Constants.kDriveKinematics, 10); 
+        //max voltage is 10, so voltage is the same regardless of current battery voltage because the bat voltage is always >10
+
+      // Create config for trajectory
+      TrajectoryConfig config =
+      new TrajectoryConfig(Constants.kMaxSpeedMetersPerSecond, Constants.kMaxAccelerationMetersPerSecondSquared)
         // Add kinematics to ensure max speed is actually obeyed
         .setKinematics(Constants.kDriveKinematics)
         // Apply the voltage constraint
         .addConstraint(autoVoltageConstraint)
         .setReversed(false);
 
-    /*Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-          // Start at the origin facing the +X direction
-      new Pose2d(1.3, -2.2, new Rotation2d(0)),
-      List.of(
-        //Pass through these two interior waypoints, making an 's' curve path
-        //input as (y, -x) if you're thinking of the field as a normal Cartesian plane
-        //new Translation2d(1, 1),
-        //new Translation2d(2, -1)
-        //new Translation2d(0.5, 0.75),
-        //new Translation2d(1.0, 1.5),
-        //new Translation2d(1.5, 0.75)
-        new Translation2d(2.4, -2.1),
-        //new Translation2d(2.9, -2.1),
-        //new Translation2d(3.4, -2.2),
-        new Translation2d(3.76, -2.27),
-        //new Translation2d(4.05, -2.49),
-        //new Translation2d(4.18, -2.68),
-        //new Translation2d(4.29, -2.89),
-        //new Translation2d(4.35, -3.15),
-        //new Translation2d(4.31, -3.40),
-        //new Translation2d(4.13, -3.48),
-        new Translation2d(3.83, -3.53),
-        //new Translation2d(3.52, -3.49),
-        //new Translation2d(3.34, -3.26),
-        //new Translation2d(3.38, -2.99),
-        new Translation2d(3.51, -2.77),
-        //new Translation2d(3.91, -2.50),
-        new Translation2d(4.26, -2.42),
-        new Translation2d(4.93, -2.37),
-        new Translation2d(5.59, -2.28)
-      ),
-      // End 3 meters straight ahead of where we started, facing forward
-      new Pose2d(5.82, -2.21, new Rotation2d(-0.3)),
-      // Pass config
-      config
-    );*/
+      Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+            // Start at the origin facing the +X direction
+        new Pose2d(1.3, -2.2, new Rotation2d(0)),
+        List.of(
+          //Pass through these two interior waypoints, making an 's' curve path
+          //input as (y, -x) if you're thinking of the field as a normal Cartesian plane
+          //new Translation2d(1, 1),
+          //new Translation2d(2, -1)
+          //new Translation2d(0.5, 0.75),
+          //new Translation2d(1.0, 1.5),
+          //new Translation2d(1.5, 0.75)
+          new Translation2d(2.4, -2.1),
+          //new Translation2d(2.9, -2.1),
+          //new Translation2d(3.4, -2.2),
+          new Translation2d(3.76, -2.27),
+          //new Translation2d(4.05, -2.49),
+          //new Translation2d(4.18, -2.68),
+          //new Translation2d(4.29, -2.89),
+          //new Translation2d(4.35, -3.15),
+          //new Translation2d(4.31, -3.40),
+          //new Translation2d(4.13, -3.48),
+          new Translation2d(3.83, -3.53),
+          //new Translation2d(3.52, -3.49),
+          //new Translation2d(3.34, -3.26),
+          //new Translation2d(3.38, -2.99),
+          new Translation2d(3.51, -2.77),
+          //new Translation2d(3.91, -2.50),
+          new Translation2d(4.26, -2.42),
+          new Translation2d(4.93, -2.37),
+          new Translation2d(5.59, -2.28)
+        ),
+        // End 3 meters straight ahead of where we started, facing forward
+        new Pose2d(5.82, -2.21, new Rotation2d(-0.3)),
+        // Pass config
+        config
+      );
 
-    /*RamseteController disabledRamsete = new RamseteController() {
-      @Override
-      public ChassisSpeeds calculate(Pose2d currentPose, Pose2d poseRef, double linearVelocityRefMeters,
-        double angularVelocityRefRadiansPerSecond) {
-          return new ChassisSpeeds(linearVelocityRefMeters, 0.0, angularVelocityRefRadiansPerSecond);
-        }
-    };*/
-    /*Trajectory exampleTrajectory1 = Robot.testTrajectory1;
+      //used for troubleshooting only
+      RamseteController disabledRamsete = new RamseteController() {
+        @Override
+        public ChassisSpeeds calculate(Pose2d currentPose, Pose2d poseRef, double linearVelocityRefMeters,
+          double angularVelocityRefRadiansPerSecond) {
+            return new ChassisSpeeds(linearVelocityRefMeters, 0.0, angularVelocityRefRadiansPerSecond);
+          }
+      };
+    */
 
-    PIDController leftController = new PIDController(Constants.kPDriveVel, 0, 0);
-    PIDController rightController = new PIDController(Constants.kPDriveVel, 0, 0);
-    //PIDController leftController = new PIDController(0, 0, 0);
-    //PIDController rightController = new PIDController(0, 0, 0);
-
-    RamseteCommand ramseteCommand = new RamseteCommand(
-      exampleTrajectory1,
-      driveTrain::getPose,
-      new RamseteController(Constants.kRamseteB, Constants.kRamseteZeta),
-      //disabledRamsete,
-      new SimpleMotorFeedforward(Constants.ksVolts,
-                                  Constants.kvVoltSecondsPerMeter,
-                                  Constants.kaVoltSecondsSquaredPerMeter),
-      Constants.kDriveKinematics,
-      driveTrain::getWheelSpeeds,
-      leftController,
-      rightController,
-      // RamseteCommand passes volts to the callback
-      //driveTrain::tankDriveVolts,
-      (leftVolts, rightVolts) -> {
-        driveTrain.tankDriveVolts(leftVolts, rightVolts);
-
-        SmartDashboard.putNumber("left measurement", driveTrain.getWheelSpeeds().leftMetersPerSecond);
-        SmartDashboard.putNumber("left reference", leftController.getSetpoint());
-
-        SmartDashboard.putNumber("right measurement", driveTrain.getWheelSpeeds().rightMetersPerSecond);
-        SmartDashboard.putNumber("right reference", rightController.getSetpoint());
-      },
-      driveTrain
-    );
-
-    // Reset odometry to the starting pose of the trajectory.
-    driveTrain.resetOdometry(exampleTrajectory1.getInitialPose());
-
-    // Run path following command, then stop at the end.
-    return ramseteCommand.andThen(() -> driveTrain.tankDriveVolts(0, 0));
-    //return ramseteCommand.alongWith(new SuckBalls(intake));
-  
-    //return chooser.getSelected(); 
-    //return backwardsTrajectoryTest;*/
-    return 
-    //new InstantCommand(driveTrain::reverseDrive, driveTrain)
-    getForwardTestCommand()
-    //.alongWith(new SuckBalls(intake))
-    //.andThen(new InstantCommand(driveTrain::unReverseDrive, driveTrain))
-    //.andThen(getReverseTestCommand())
-    
-    ;
-
-  } 
-
-  public Command getForwardTestCommand() {
-    Trajectory exampleTrajectory1 = Robot.testTrajectory1;
+    Trajectory trajectory1 = Robot.trajectory1;
     //exampleTrajectory1 = TrajectoryGenerator.generateTrajectory(d, config)
 
     PIDController leftController = new PIDController(Constants.kPDriveVel, 0, 0);
@@ -376,13 +334,11 @@ public class RobotContainer {
     //PIDController rightController = new PIDController(0, 0, 0);
 
     RamseteCommand ramseteCommand = new RamseteCommand(
-      exampleTrajectory1,
+      trajectory1,
       driveTrain::getPose,
       new RamseteController(Constants.kRamseteB, Constants.kRamseteZeta),
       //disabledRamsete,
-      new SimpleMotorFeedforward(Constants.ksVolts,
-                                  Constants.kvVoltSecondsPerMeter,
-                                  Constants.kaVoltSecondsSquaredPerMeter),
+      new SimpleMotorFeedforward(Constants.ksVolts, Constants.kvVoltSecondsPerMeter, Constants.kaVoltSecondsSquaredPerMeter),
       Constants.kDriveKinematics,
       driveTrain::getWheelSpeeds,
       leftController,
@@ -390,11 +346,13 @@ public class RobotContainer {
       // RamseteCommand passes volts to the callback
       //driveTrain::tankDriveVolts,
       (leftVolts, rightVolts) -> {
-        driveTrain.tankDriveVolts(rightVolts, leftVolts); //TODO: change
+        driveTrain.tankDriveVolts(leftVolts, rightVolts);
+
+        //use this when doing a trajectory facing backwards
+        //driveTrain.tankDriveVolts(rightVolts, leftVolts);
 
         /*SmartDashboard.putNumber("left measurement", driveTrain.getWheelSpeeds().leftMetersPerSecond);
         SmartDashboard.putNumber("left reference", leftController.getSetpoint());
-
         SmartDashboard.putNumber("right measurement", driveTrain.getWheelSpeeds().rightMetersPerSecond);
         SmartDashboard.putNumber("right reference", rightController.getSetpoint());*/
       },
@@ -402,17 +360,20 @@ public class RobotContainer {
     );
 
     // Reset odometry to the starting pose of the trajectory.
-    driveTrain.resetOdometry(exampleTrajectory1.getInitialPose());
+    driveTrain.resetOdometry(trajectory1.getInitialPose());
 
     // Run path following command, then stop at the end.
-    //return ramseteCommand.andThen(() -> driveTrain.tankDriveVolts(0, 0));
-    return ramseteCommand.alongWith(new SuckBalls(intake));
+    return ramseteCommand.andThen(() -> driveTrain.tankDriveVolts(0, 0));
+
+    //return ramseteCommand
+    //.alongWith(new SuckBalls(intake))
     //return new InstantCommand(driveTrain::resetEncoders, driveTrain).andThen()
+    //;
   
   }
   
-  public Command getReverseTestCommand() {
-    Trajectory exampleTrajectory2 = Robot.testTrajectory2;
+  public Command getRamseteCommand2() {
+    Trajectory trajectory2 = Robot.trajectory2;
 
     PIDController leftController = new PIDController(Constants.kPDriveVel, 0, 0);
     PIDController rightController = new PIDController(Constants.kPDriveVel, 0, 0);
@@ -420,7 +381,7 @@ public class RobotContainer {
     //PIDController rightController = new PIDController(0, 0, 0);
 
     RamseteCommand ramseteCommand = new RamseteCommand(
-      exampleTrajectory2,
+      trajectory2,
       driveTrain::getPose,
       new RamseteController(Constants.kRamseteB, Constants.kRamseteZeta),
       //disabledRamsete,
@@ -446,7 +407,7 @@ public class RobotContainer {
     );
 
     // Reset odometry to the starting pose of the trajectory.
-    driveTrain.resetOdometry(exampleTrajectory2.getInitialPose());
+    driveTrain.resetOdometry(trajectory2.getInitialPose());
 
     // Run path following command, then stop at the end.
     return ramseteCommand.andThen(() -> driveTrain.tankDriveVolts(0, 0));
@@ -454,7 +415,7 @@ public class RobotContainer {
   
   }
 
-  public void reverseDrive1() {
+  public void reverseDriveTrain() {
     driveTrain.reverseDrive();
   }
 }

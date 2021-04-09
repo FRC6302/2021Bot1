@@ -33,12 +33,13 @@ public class Robot extends TimedRobot {
 
   public static RobotContainer robotContainer;
 
-  public static String trajectoryJSON1;
-  public static Path testPath1;
-  public static Trajectory testTrajectory1; 
-  public static String trajectoryJSON2;
-  public static Path testPath2;
-  public static Trajectory testTrajectory2; 
+  public String trajectoryJSON1;
+  public Path path1;
+  public static Trajectory trajectory1; 
+
+  public String trajectoryJSON2;
+  public Path path2;
+  public static Trajectory trajectory2; 
 
 
   /**
@@ -47,50 +48,59 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    /*
+      Pathweaver is a program built into VS Code that shows an image of the course i need to run and
+      lets me draw a trajectory onto the course. I then put this trajectory into my ramsete command.
+
+      I am loading these trajectories right when the robot inits and not in the getRamseteCommand() method
+      because they can take a while to load up, and if i did it there, then there would be a delay when
+      I called the method or started autonomous mode.
+    */
+
     //change this to change what path is run by the robot
-    //Robot.trajectoryJSON = "BarrelRacingPW/PathWeaver/output/BarrelRacing.wpilib.json";
-    //Robot.trajectoryJSON = "BouncePathPW/PathWeaver/output/BouncePath.wpilib.json";
-    //Robot.trajectoryJSON = "PathWeaver3/PathWeaver/output/BarrelRacing.wpilib.json";
+    //the computer looks for the file in 2021Bot1/src/main/deploy, so all these files are in that folder
+    //trajectoryJSON1 = "SlalomPW2/PathWeaver/output/Slalom1.wpilib.json";
+    //trajectoryJSON1 = "BarrelPW2/PathWeaver/output/Barrel1.wpilib.json";
+    trajectoryJSON1 = "BouncePW2/PathWeaver/output/Bounce1.wpilib.json";
+    //trajectoryJSON1 = "BouncePW2/PathWeaver/output/Forwards.wpilib.json";
+    //trajectoryJSON1 = "GalacticAPW2/PathWeaver/output/GalacticA1.wpilib.json";
+    //trajectoryJSON1 = "GalacticBPW2/PathWeaver/output/GalacticB1.wpilib.json";
 
-    //Robot.trajectoryJSON1 = "SlalomPW2/PathWeaver/output/Slalom1.wpilib.json";
-    //Robot.trajectoryJSON1 = "BarrelPW2/PathWeaver/output/Barrel1.wpilib.json";
-    //Robot.trajectoryJSON1 = "BouncePW2/PathWeaver/output/Bounce1.wpilib.json";
-    //Robot.trajectoryJSON1 = "BouncePW2/PathWeaver/output/Forwards.wpilib.json";
-    Robot.trajectoryJSON1 = "GalacticAPW2/PathWeaver/output/GalacticA1.wpilib.json";
-    //Robot.trajectoryJSON1 = "GalacticBPW2/PathWeaver/output/GalacticB1.wpilib.json";
-
-    Trajectory.State testState1 = new Trajectory.State(1., 1., 1., new Pose2d(0, 0, new Rotation2d(0)), 1.);
-    Robot.testTrajectory1 = new Trajectory(List.of(testState1));
-
-    try {
-    Robot.testPath1 = Filesystem.getDeployDirectory().toPath().resolve(Robot.trajectoryJSON1);
-    } catch (RuntimeException ex) {
-      DriverStation.reportError("Unable to open trajectory : " + Robot.trajectoryJSON1 + " because: ", ex.getStackTrace());
-    }
+    //random numbers. If everything runs right, then this trajectory should never be followed.
+    Trajectory.State state1 = new Trajectory.State(1., 1., 1., new Pose2d(0, 0, new Rotation2d(0)), 1.);
+    
+    //The trajectory has to be initialized as something in case the trajectory from the file isnt received.
+    //The trajectory is static so i can access it in RobotContainer without making a Robot object
+    Robot.trajectory1 = new Trajectory(List.of(state1));
 
     try {
-      testTrajectory1 = TrajectoryUtil.fromPathweaverJson(Robot.testPath1);
+      path1 = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON1);
+      trajectory1 = TrajectoryUtil.fromPathweaverJson(path1);
     } catch (IOException ex) {
-      DriverStation.reportError("Unable to change path to trajectory because:", ex.getStackTrace());
+      DriverStation.reportError("Trajectory file path probably doesn't exist:", ex.getStackTrace());
     }
     
 
-    Robot.trajectoryJSON2 = "BouncePW2/PathWeaver/output/Reverse.wpilib.json";
-    Trajectory.State testState2 = new Trajectory.State(1., 1., 1., new Pose2d(0, 0, new Rotation2d(0)), 1.);
-    Robot.testTrajectory2 = new Trajectory(List.of(testState2));
+    //Making a second trajectory in case something has to be done inbetween the robot moving.
+    //For example, i might wanna follow a path to a shooting position, turn towards the target,
+    //shoot, and then follow another path somewhere else. This couldnt be achieved with just one path.
+    trajectoryJSON2 = "BouncePW2/PathWeaver/output/Reverse.wpilib.json";
+
+    //random numbers
+    Trajectory.State state2 = new Trajectory.State(1., 1., 1., new Pose2d(0, 0, new Rotation2d(0)), 1.);
+
+    //the trajectory has to be initialized as something in case the trajectory from the file isnt received
+    Robot.trajectory2 = new Trajectory(List.of(state2));
 
     try {
-    Robot.testPath2 = Filesystem.getDeployDirectory().toPath().resolve(Robot.trajectoryJSON2);
-    } catch (RuntimeException ex) {
-      DriverStation.reportError("Unable to open trajectory : " + Robot.trajectoryJSON2 + " because: ", ex.getStackTrace());
-    }
-
-    try {
-      testTrajectory2 = TrajectoryUtil.fromPathweaverJson(Robot.testPath2);
+      path2 = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON2);
+      trajectory2 = TrajectoryUtil.fromPathweaverJson(path2);
     } catch (IOException ex) {
-      DriverStation.reportError("Unable to change path to trajectory because:", ex.getStackTrace());
+      DriverStation.reportError("Trajectory file path probably doesn't exist:", ex.getStackTrace());
     }
 
+    //this makes sure the yaw is zero when the robot starts up
+    NavX.zeroGyroYaw();
 
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
@@ -129,7 +139,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    robotContainer.reverseDrive1();
+    //use when doing a trajectory facing backwards
+    //robotContainer.reverseDriveTrain();
     
     NavX.zeroGyroYaw();
 

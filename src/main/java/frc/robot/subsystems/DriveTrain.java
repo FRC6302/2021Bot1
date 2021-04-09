@@ -60,38 +60,43 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 //MAKING THIS CLASS WITH THE WPILIB TRAJECTORY TUTORIAL
 public class DriveTrain extends SubsystemBase {
+  //TO DO: SuppressWarnings class ??
+
+  //TO DO: put tiny blacks screws and plastic cover back on talon. Uses 3/32 allen
+
+  //TO DO: find whereever i used an instant command and change it to a lambda?
+  //Also, graph pidController.getSetpoint() to test turn right command
 
   WPI_TalonSRX motorL1 = new WPI_TalonSRX(Constants2.MOTOR_L1.value);
   WPI_TalonSRX motorL2 = new WPI_TalonSRX(Constants.motorL2Value);
   WPI_TalonSRX motorR1 = new WPI_TalonSRX(Constants.motorR1Value);
   WPI_TalonSRX motorR2 = new WPI_TalonSRX(Constants.motorR2Value);
 
-  private final NeutralMode motorMode = NeutralMode.Brake;
-
   private final SpeedControllerGroup leftMotors;
   private final SpeedControllerGroup rightMotors;
 
-  //private final DifferentialDrive diffDrive;
-  //TO DO: SuppressWarnings class ??
-  //TO DO: put tiny blacks screws and plastic cover back on talon. Uses 3/32 allen
+  //brake mode reduces wheel slip
+  private final NeutralMode motorMode = NeutralMode.Brake;
 
+  //private final DifferentialDrive diffDrive;
+
+  private int driveReverser = 1;
+  
   //encoder cycles per rev = pulse per rev
   //I am using type 1x here because the data is too noisy on the others
   private final Encoder leftDriveEnc = new Encoder(Constants.leftDriveEncChannelA, 
     Constants.leftDriveEncChannelB, false, CounterBase.EncodingType.k1X);
   private final Encoder rightDriveEnc = new Encoder(Constants.rightDriveEncChannelA, 
     Constants.rightDriveEncChannelB, true, CounterBase.EncodingType.k1X);
-  //private final Encoder testEnc = new Encoder(Constants.testEncChannelA, 
-    //Constants.testEncChannelB, false);
 
   //private final AnalogEncoder leftDriveEnc2 = new AnalogEncoder(new AnalogInput(0));
   //private final AnalogEncoder rightDriveEnc2 = new AnalogEncoder(new AnalogInput(3));
 
   /*
-  Distance Per Pulse (dpp) calculation explanation:
-  distance per pulse is pi * (wheel diameter / counts per revolution) according to Andymark enc example code
-  using meters for wheel diam because tutorial said to
-  counts per rev is 8192 for Rev Through Bore Encoder
+    Distance Per Pulse (dpp) calculation explanation:
+    distance per pulse is pi * (wheel diameter / counts per revolution) according to Andymark enc example code.
+    Using meters for wheel diam because tutorial said to.
+    Counts per rev is 8192 for Rev Through Bore Encoder, but 2048 is the number that got the right measurement, so idk
   */
   private final double driveEncDPP = Math.PI * 0.1524 / 2048; //0.152400 meters is 6 inches
   //private final double driveEncDPP = 1 / 2048; //in this case the distance unit is one rotation i think
@@ -109,22 +114,11 @@ public class DriveTrain extends SubsystemBase {
   TrajectoryPoint class?
   */
 
-  private int driveReverser = 1;
 
   /**
    * Creates a new DriveTrain.
    */
   public DriveTrain() {
-
-    leftDriveEnc.setDistancePerPulse(driveEncDPP);
-    rightDriveEnc.setDistancePerPulse(driveEncDPP);
-    //the samples to average thing makes the data less noisy
-    //dont change number without testing the new number with the frc drive charaterization data plots
-    leftDriveEnc.setSamplesToAverage(30); //30
-    rightDriveEnc.setSamplesToAverage(30);
-
-    //leftDriveEnc2.setDistancePerRotation(driveEncDPP);
-    //rightDriveEnc2.setDistancePerRotation(driveEncDPP);
 
     motorL1.setNeutralMode(motorMode);
     motorL2.setNeutralMode(motorMode);
@@ -141,6 +135,8 @@ public class DriveTrain extends SubsystemBase {
     //motorR1.setExpiration(10);
     //motorR2.setExpiration(10);
 
+    //this is the deadzone for the motors. Any number below this get changed to zero.
+    //Note that the minimum motor input to overcome static friction is about 0.0015 ish
     motorL1.configNeutralDeadband(0.001);
     motorL2.configNeutralDeadband(0.001);
     motorR1.configNeutralDeadband(0.001);
@@ -150,6 +146,14 @@ public class DriveTrain extends SubsystemBase {
     rightMotors = new SpeedControllerGroup(motorR1, motorR2);
     //diffDrive = new DifferentialDrive(leftMotors, rightMotors);
 
+    leftDriveEnc.setDistancePerPulse(driveEncDPP);
+    rightDriveEnc.setDistancePerPulse(driveEncDPP);
+
+    //the samples to average thing makes the data less noisy
+    //dont change number without testing the new number with the frc drive charaterization data plots
+    leftDriveEnc.setSamplesToAverage(30);
+    rightDriveEnc.setSamplesToAverage(30);
+
     //encoders have to be set to zero before constructing odometry class
     resetEncoders();
     NavX.zeroGyroYaw();
@@ -157,14 +161,13 @@ public class DriveTrain extends SubsystemBase {
     odometry = new DifferentialDriveOdometry(NavX.getGyroRotation2d());
     
   }
-  //TO DO: find whereever i used an instant command and change it to a lambda?
-  //Also, graph pidController.getSetpoint() to test turn right command
-
+  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    //TODO: make this run faster. It's at 0.02s
+    //TO DO: make this run faster? It's at 0.02s
     odometry.update(NavX.getGyroRotation2d(), leftDriveEnc.getDistance(), rightDriveEnc.getDistance());
+
     //var translation = odometry.getPoseMeters().getTranslation();
     //SmartDashboard.putNumber("translation x", translation.getX());
     //SmartDashboard.putNumber("translation y", translation.getY());
@@ -172,14 +175,12 @@ public class DriveTrain extends SubsystemBase {
 
     SmartDashboard.putNumber("leftDriveEncDistance", leftDriveEnc.getDistance());
     SmartDashboard.putNumber("leftDriveEncRate", leftDriveEnc.getRate());
-    //SmartDashboard.putNumber("leftDriveEncCount", leftDriveEnc.get());
     SmartDashboard.putNumber("rightDriveEncDistance", rightDriveEnc.getDistance());
     SmartDashboard.putNumber("rightDriveEncRate", rightDriveEnc.getRate());
-    //SmartDashboard.putNumber("rightDriveEncCount", rightDriveEnc.get());
     //SmartDashboard.putNumber("motorL1 output percent", motorL1.getMotorOutputPercent());
-    //SmartDashboard.putBoolean("leftEncStopped", leftDriveEnc.getStopped());
-    //SmartDashboard.putBoolean("rightEncStopped", rightDriveEnc.getStopped());
 
+    //this is supposed to be so i dont get errors saying the motor output doesnt update enough,
+    //but i still get them
     motorL1.feed();
     motorL2.feed();
     motorR1.feed();
@@ -187,11 +188,13 @@ public class DriveTrain extends SubsystemBase {
 
   }
 
-  /*public void arcadeDrive(double xSpeed, double zRotation, boolean squareInputs) {
+  /*
+  public void arcadeDrive(double xSpeed, double zRotation, boolean squareInputs) {
     diffDrive.arcadeDrive(xSpeed, zRotation, squareInputs);
     SmartDashboard.putNumber("xSpeed", xSpeed);
     SmartDashboard.putNumber("zRotation", zRotation);
-  }*/
+  }
+  */
 
   public void setLeftMotors(double speed){
     motorL1.set(ControlMode.PercentOutput, speed * driveReverser);
@@ -204,12 +207,10 @@ public class DriveTrain extends SubsystemBase {
     motorR2.set(ControlMode.PercentOutput, -speed * driveReverser);
   }
 
-
   public void tankDriveVolts(double leftVolts, double rightVolts) {
     leftMotors.setVoltage(leftVolts * driveReverser);
     rightMotors.setVoltage(-rightVolts * driveReverser);
 
-    //idrk what these do but the project had it so
     motorL1.feed();
     motorL2.feed();
     motorR1.feed();
@@ -259,7 +260,7 @@ public class DriveTrain extends SubsystemBase {
     odometry.resetPosition(pose, NavX.getGyroRotation2d());
   }
   
-  double PIDDivisor = 1;
+  final double PIDDivisor = 1;
   public void usePIDOutput(double output) {
     SmartDashboard.putNumber("PIDOutput", output);
     setLeftMotors(output / PIDDivisor);
