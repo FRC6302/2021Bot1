@@ -30,15 +30,16 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
   You can probably skip some of the string stuff, but it's still good to know.
 
   Once you have understand everything in the course, watch these series to apply your knowledge to FRC:
-  1. FRC Java Programming Tutorials
+  1. FRC Java Programming Tutorials by Manning Robotics
   https://www.youtube.com/playlist?list=PLqolGlJdb9oWsgP4biujl_eTFazESWl8o 
   Note that this series is a little old, and there has been a new command based framework since then. 
   So don't copy his code at all. Just follow along with the logic of it.
+  Note that RobotContainer is the new version of OI, and Constants is the new RobotMap.
   2. First Robotics Competition - Command Base System 2020 - VS Code - Java
   https://www.youtube.com/playlist?list=PLYwJIUT_B-n612Gqmfsq1ukYLa6WKgonc 
   This video uses the new framework.
-  I would recommend that you follow along these videos without basing your code off of mine, especially
-  if you encounter some errors. It is a learning experience.
+  I would recommend that you follow along these videos without looking at my code until you have everything
+  working, especially if you encounter some errors. It's a learning experience to solve your own errors.
   Good luck :) -Samuel, 2021
   
   
@@ -48,6 +49,16 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
   2. If you have an error, someone has probably posted about it on Chief Delphi or Stack Overflow. 
   Google the error and see what pops up. It could also be a mechanical problem, especially if Pauley built it. 
   3. WPILIB has a lot of tutorials for various things on their website.
+
+  Various guides:
+  1. PID Control explanation
+  Channel: FRC 0 to Autonomous
+  https://www.youtube.com/channel/UCmJAoN-yI6AJDv7JJ3372yg
+  Watch parts 3 and 4 for the logic of PID control. I wouldn't copy the code directly, as it doesn't 
+  use the command-based framework like we do. 
+  2. FRC Programming Done Right
+  https://www.chiefdelphi.com/t/frc-programming-done-right/158005
+  A guide for basically everything you'll code for FRC
   
   Putting your code on GitHub: 
   1. Watch a few videos on how GitHub works - learn about pull requests, commits, pushes, branches, etc.
@@ -63,9 +74,6 @@ public class DriveTrain extends SubsystemBase {
   //TO DO: SuppressWarnings class ??
 
   //TO DO: put tiny blacks screws and plastic cover back on talon. Uses 3/32 allen
-
-  //TO DO: find whereever i used an instant command and change it to a lambda?
-  //Also, graph pidController.getSetpoint() to test turn right command
 
   WPI_TalonSRX motorL1 = new WPI_TalonSRX(Constants2.MOTOR_L1.value);
   WPI_TalonSRX motorL2 = new WPI_TalonSRX(Constants.motorL2Value);
@@ -168,7 +176,6 @@ public class DriveTrain extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    //TO DO: make this run faster? It's at 0.02s
     odometry.update(NavX.getGyroRotation2d(), leftDriveEnc.getDistance(), rightDriveEnc.getDistance());
 
     //var translation = odometry.getPoseMeters().getTranslation();
