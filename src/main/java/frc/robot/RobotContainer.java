@@ -33,6 +33,7 @@ import frc.robot.commands.ParallelShootAndFeed;
 import frc.robot.commands.SeekLeft;
 import frc.robot.commands.SeekLeftPID;
 import frc.robot.commands.SeekRight;
+import frc.robot.commands.SenseColor;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.ShootAndFeed;
 import frc.robot.commands.SuckBalls;
@@ -80,6 +81,8 @@ public class RobotContainer {
   private final SeekLeftPID seekLeftPID;
   private final SeekRight seekRight;
   private final GetInRange getInRange;
+
+  private final SenseColor senseColor;
 
   private final Move move;
   private final MoveDistancePID moveDistancePID;
@@ -142,6 +145,8 @@ public class RobotContainer {
     //seekRight.addRequirements(limelight);
     getInRange = new GetInRange(driveTrain);
     getInRange.addRequirements(driveTrain);
+
+    senseColor = new SenseColor();
 
     move = new Move(driveTrain);
     move.addRequirements(driveTrain);
@@ -243,6 +248,9 @@ public class RobotContainer {
 
     //final JoystickButton shootButton = new JoystickButton(driverController, Constants.shootButton);
     //shootButton.whileHeld(new Shoot(shooter));
+
+    final JoystickButton senseColorButton = new JoystickButton(driverController, Constants.senseColorButton);
+    senseColorButton.whileHeld(new SenseColor());
   }
   
 

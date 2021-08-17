@@ -7,10 +7,12 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.NavX;
 
 public class DriveGTA extends CommandBase {
   private final DriveTrain driveTrain;
@@ -19,6 +21,16 @@ public class DriveGTA extends CommandBase {
   //private double rightTriggerSquared, leftTriggerSquared;
   //AHRS gyro;
   //boolean gyroIsCalibrating;
+
+  private double currentAccelX = 0;
+  private double lastAccelX = 0;
+  private double jerkX = 0;
+
+  private double currentAccelY = 0;
+  private double lastAccelY = 0;
+  private double jerkY = 0;
+
+  boolean collisionDetected = false;
 
   /**
    * Creates a new DriveGTA.
@@ -50,6 +62,24 @@ public class DriveGTA extends CommandBase {
 
     driveTrain.setLeftMotors(triggerVal + scaledStickInput);
     driveTrain.setRightMotors(triggerVal - scaledStickInput);
+
+    currentAccelX = NavX.getGyroAccelX();
+    jerkX = currentAccelX - lastAccelX;
+    lastAccelX = NavX.getGyroAccelX();
+
+    currentAccelY = NavX.getGyroAccelY();
+    jerkY = currentAccelY - lastAccelY;
+    lastAccelY = NavX.getGyroAccelY();
+
+    if (Math.abs(jerkX) > Constants.jerkThreshold || Math.abs(jerkY) > Constants.jerkThreshold)
+    {
+      collisionDetected = true;
+    }
+
+    SmartDashboard.putNumber("jerkX", jerkX);
+    SmartDashboard.putNumber("jerkY", jerkY);
+    SmartDashboard.putBoolean("collision detected?", collisionDetected);
+
   }
 
   // Called once the command ends or is interrupted.

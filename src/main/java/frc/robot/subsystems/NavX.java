@@ -29,6 +29,8 @@ public class NavX extends SubsystemBase{
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("gyroYaw", getGyroYaw());
+    SmartDashboard.putNumber("gyroAccelX", getGyroAccelX());
+    SmartDashboard.putNumber("gyroAccelY", getGyroAccelY());
     SmartDashboard.putBoolean("gyroIsCalibrating", gyroIsCalibrating());
   }
 
@@ -41,6 +43,14 @@ public class NavX extends SubsystemBase{
   public static Rotation2d getGyroRotation2d() {
     //i made yaw negative because it needs to increase as it turns left to work for DiffDrive
     return Rotation2d.fromDegrees(getGyroYaw());
+  }
+
+  public static double getGyroAccelX(){
+    return gyro.getWorldLinearAccelX();
+  }
+
+  public static double getGyroAccelY(){
+    return gyro.getWorldLinearAccelY();
   }
 
   public static void zeroGyroYaw() {

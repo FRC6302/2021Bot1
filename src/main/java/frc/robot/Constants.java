@@ -108,6 +108,9 @@ public final class Constants {
 
     //gyro
     public static final double turnToZeroYawSpeed = 0.3;
+
+    //collision
+    public static final double jerkThreshold = 1;
     
     //miscellaneous
     public static final double turningRate = 0.5;
@@ -128,6 +131,7 @@ public final class Constants {
 	public static final int turnRightButton = Constants.leftBumper;
 	public static final int intakeButton = Constants.rightBumper;
 	public static final int shootButton = Constants.leftBumper;
+	public static final int senseColorButton = Constants.bButton;
 	
 	
 	
