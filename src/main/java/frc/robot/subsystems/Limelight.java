@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 //subsystem for the limelight camera on our robot. Used for vision tracking and stuff
 public class Limelight extends SubsystemBase {
-  static double x = 0, y = 0, targetFound = 0;
+  static double x = 0, y = 0, area = 0, targetFound = 0;
 
   //TODO: make a method that returns distance from target and then use that distance
   //to move to the right distance using MoveDistancePID
@@ -44,19 +44,19 @@ public class Limelight extends SubsystemBase {
     
     NetworkTableEntry tx = table.getEntry("tx"); 
     NetworkTableEntry ty = table.getEntry("ty"); 
-    //NetworkTableEntry ta = table.getEntry("ta");
+    NetworkTableEntry ta = table.getEntry("ta");
     NetworkTableEntry tv = table.getEntry("tv");
     
     //read values periodically
     Limelight.x = tx.getDouble(0.0); //ranges from -29.8 to 29.8 degrees for LL2
     Limelight.y = ty.getDouble(0.0); //ranges from -24.85 to 24.85 degrees for LL2
-    //double area = ta.getDouble(0.0); //ranges from 0 to 100% of image
+    double area = ta.getDouble(0.0); //ranges from 0 to 100% of image
     Limelight.targetFound = tv.getDouble(0.0);
 
     //posts to smart dashboard periodically
     SmartDashboard.putNumber("LimelightX", x);
     SmartDashboard.putNumber("LimelightY", y);
-    //SmartDashboard.putNumber("LimelightArea", area); 
+    SmartDashboard.putNumber("LimelightArea", area); 
     SmartDashboard.putNumber("LimelightTargetFound", targetFound);
   }
 
@@ -70,5 +70,17 @@ public class Limelight extends SubsystemBase {
 
   public static double getTargetFound() {
     return targetFound;
+  }
+
+  public static double getArea() {
+    return area;
+  }
+
+  public static double getTargetDistance() {
+    //figure out the formula based on linear regresion of data table with
+    //x as area and y as the distance measured by me. Might be polynomial.
+    //Formula will change based on size of reflective target/tape.
+    //Might be able to work out formula with math and the camera's field of view?
+    return area * 5;
   }
 }

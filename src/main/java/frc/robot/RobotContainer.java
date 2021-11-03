@@ -28,12 +28,14 @@ import frc.robot.commands.Feed;
 import frc.robot.commands.GetInRange;
 import frc.robot.commands.Move;
 import frc.robot.commands.MoveDistancePID;
+import frc.robot.commands.MoveDistanceSensor;
 import frc.robot.commands.MoveStraight;
 import frc.robot.commands.ParallelShootAndFeed;
 import frc.robot.commands.SeekLeft;
 import frc.robot.commands.SeekLeftPID;
 import frc.robot.commands.SeekRight;
 import frc.robot.commands.SenseColor;
+import frc.robot.commands.SenseDistance;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.ShootAndFeed;
 import frc.robot.commands.SuckBalls;
@@ -42,6 +44,7 @@ import frc.robot.commands.TurnRight;
 import frc.robot.commands.TurnToYawZero;
 import frc.robot.commands.ZeroYawAndTurnRight;
 import frc.robot.subsystems.BatteryVoltage;
+import frc.robot.subsystems.DistanceSensor;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.NavX;
 import frc.robot.subsystems.Shooter;
@@ -83,9 +86,12 @@ public class RobotContainer {
   private final GetInRange getInRange;
 
   private final SenseColor senseColor;
+  private final SenseDistance senseDistance;
+  private final DistanceSensor distanceSensor;
 
   private final Move move;
   private final MoveDistancePID moveDistancePID;
+  private final MoveDistanceSensor moveDistanceSensor;
 
   private final NavX navX;
   private final TurnToYawZero turnToYawZero;
@@ -146,12 +152,17 @@ public class RobotContainer {
     getInRange = new GetInRange(driveTrain);
     getInRange.addRequirements(driveTrain);
 
-    senseColor = new SenseColor();
+    senseColor = new SenseColor(driveTrain);
+    senseColor.addRequirements(driveTrain);
+    senseDistance = new SenseDistance(driveTrain);
+    senseDistance.addRequirements(driveTrain);
+    distanceSensor = new DistanceSensor();
 
     move = new Move(driveTrain);
     move.addRequirements(driveTrain);
     moveDistancePID = new MoveDistancePID(driveTrain, 3);
     moveDistancePID.addRequirements(driveTrain);
+    moveDistanceSensor = new MoveDistanceSensor(driveTrain, 15, 0.3);
 
     navX = new NavX(); //NavX class must be instantiated or the code will never run and it wont give values
     turnToYawZero = new TurnToYawZero(driveTrain);
@@ -217,19 +228,20 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    final JoystickButton limelightTargetButton = new JoystickButton(driverController, Constants.limelightTargetButton);
+    //final JoystickButton limelightTargetButton = new JoystickButton(driverController, Constants.limelightTargetButton);
     //limelightTargetButton.whileHeld(new SeekLeft(driveTrain));
-    limelightTargetButton.whileHeld(new SeekLeftPID(driveTrain));
+    //limelightTargetButton.whileHeld(new SeekLeftPID(driveTrain));
 
     final JoystickButton moveButton = new JoystickButton(driverController, Constants.moveButton);
-    moveButton.whenPressed(new InstantCommand(driveTrain::resetEncoders, driveTrain).andThen(moveDistancePID));
+    //moveButton.whenPressed(new InstantCommand(driveTrain::resetEncoders, driveTrain).andThen(moveDistanceSensor));
+    moveButton.whileHeld(new MoveDistanceSensor(driveTrain, 20, 0.1));
 
     //final JoystickButton limelightGetInRangeButton = new 
       //JoystickButton(driverController, Constants.limelightGetInRangeButton);
     //limelightGetInRangeButton.whileHeld(new GetInRange(driveTrain));
 
-    final JoystickButton zeroYawButton = new JoystickButton(driverController, Constants.zeroYawButton);
-    zeroYawButton.whenPressed(NavX::zeroGyroYaw); //this is a method reference
+    //final JoystickButton zeroYawButton = new JoystickButton(driverController, Constants.zeroYawButton);
+    //zeroYawButton.whenPressed(NavX::zeroGyroYaw); //this is a method reference 
 
     //final JoystickButton turnToYawZeroButton = new JoystickButton(driverController, Constants.turnToYawZeroButton);
     //turnToYawZeroButton.whileHeld(new TurnToYawZero(driveTrain));
@@ -246,11 +258,14 @@ public class RobotContainer {
     final JoystickButton intakeButton = new JoystickButton(driverController, Constants.intakeButton);
     intakeButton.whileHeld(new SuckBalls(intake));
 
-    //final JoystickButton shootButton = new JoystickButton(driverController, Constants.shootButton);
-    //shootButton.whileHeld(new Shoot(shooter));
+    final JoystickButton shootButton = new JoystickButton(driverController, Constants.shootButton);
+    shootButton.whileHeld(new Shoot(shooter));
 
-    final JoystickButton senseColorButton = new JoystickButton(driverController, Constants.senseColorButton);
-    senseColorButton.whileHeld(new SenseColor());
+    //final JoystickButton senseColorButton = new JoystickButton(driverController, Constants.senseColorButton);
+    //senseColorButton.whileHeld(new SenseColor(driveTrain));
+
+    final JoystickButton senseDistanceButton = new JoystickButton(driverController, Constants.senseDistanceButton);
+    senseDistanceButton.whileHeld(senseDistance);
   }
   
 

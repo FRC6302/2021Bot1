@@ -12,8 +12,11 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.DriveTrain;
 
 public class SenseColor extends CommandBase {
+  DriveTrain driveTrain;
+
   //change the I2C port below to match the connection of your color sensor to the rio
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
 
@@ -39,12 +42,14 @@ public class SenseColor extends CommandBase {
   private final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
 
   /** Creates a new SenseColor. */
-  public SenseColor() {
+  public SenseColor(DriveTrain driveTrain) {
     // Use addRequirements() here to declare subsystem dependencies.
     colorMatcher.addColorMatch(kBlueTarget);
     colorMatcher.addColorMatch(kGreenTarget);
     colorMatcher.addColorMatch(kRedTarget);
     colorMatcher.addColorMatch(kYellowTarget);  
+
+    this.driveTrain = driveTrain;
   }
 
   // Called when the command is initially scheduled.
@@ -72,6 +77,7 @@ public class SenseColor extends CommandBase {
     String colorString;
     ColorMatchResult match = colorMatcher.matchClosestColor(detectedColor);
 
+
     if (match.color == kBlueTarget) {
       colorString = "Blue";
     } else if (match.color == kRedTarget) {
@@ -84,6 +90,12 @@ public class SenseColor extends CommandBase {
       colorString = "Unknown";
     }
 
+    switch (colorString) {
+      //do different things for different colors here
+      //case "Yellow":
+
+    }
+
     /**
      * Open Smart Dashboard or Shuffleboard to see the color detected by the 
      * sensor.
@@ -93,12 +105,19 @@ public class SenseColor extends CommandBase {
     SmartDashboard.putNumber("Blue", detectedColor.blue);
     SmartDashboard.putNumber("Confidence", match.confidence);
     SmartDashboard.putString("Detected Color", colorString);
+
+    if (colorString == "Yellow") {
+      driveTrain.setLeftMotors(-0.2);
+      driveTrain.setRightMotors(-0.2);
+    }
   }
   
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    driveTrain.stopDrive();
+  }
 
   // Returns true when the command should end.
   @Override

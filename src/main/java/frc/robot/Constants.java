@@ -106,6 +106,9 @@ public final class Constants {
 
     public static final int motorFeederValue = 0; //what is this??
 
+    //limit switch
+    public static final int magLimSwitchPort = 0;
+
     //gyro
     public static final double turnToZeroYawSpeed = 0.3;
 
@@ -132,6 +135,8 @@ public final class Constants {
 	public static final int intakeButton = Constants.rightBumper;
 	public static final int shootButton = Constants.leftBumper;
 	public static final int senseColorButton = Constants.bButton;
+	public static final int senseDistanceButton = Constants.bButton;
+	
 	
 	
 	
