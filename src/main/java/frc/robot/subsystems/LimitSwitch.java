@@ -16,6 +16,7 @@ public class LimitSwitch extends SubsystemBase {
   public LimitSwitch() {
   }
 
+  //TODO: write code to test out limit switch on a motor somehow? Nothing on there now moves around
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

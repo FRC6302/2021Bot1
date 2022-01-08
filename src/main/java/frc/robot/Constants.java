@@ -136,6 +136,7 @@ public final class Constants {
 	public static final int shootButton = Constants.leftBumper;
 	public static final int senseColorButton = Constants.bButton;
 	public static final int senseDistanceButton = Constants.bButton;
+	public static final double jerkXCollisionThreshold = 0;
 	
 	
 	
